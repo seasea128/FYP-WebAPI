@@ -20,7 +20,6 @@ go get -u
 ## Configuration
 A configuration file will be created on initial launch of the server. The configuration file is describe below.
 
-|------------------|--------|--------------------------------------------|
 | Field Name       | Type   | Default value                              |
 |------------------|--------|--------------------------------------------|
 | DBType           | DBType | Default: sqlite, can be postgres or sqlite |
