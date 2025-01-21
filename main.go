@@ -9,9 +9,9 @@ import (
 	mqtt "github.com/mochi-mqtt/server/v2"
 	"github.com/mochi-mqtt/server/v2/hooks/auth"
 	"github.com/mochi-mqtt/server/v2/listeners"
-	"github.com/seasea128/WebAPI/config"
-	"github.com/seasea128/WebAPI/database"
-	"github.com/seasea128/WebAPI/httpServer"
+	"github.com/seasea128/FYP-WebAPI/config"
+	"github.com/seasea128/FYP-WebAPI/database"
+	"github.com/seasea128/FYP-WebAPI/httpServer"
 )
 
 type Options struct {

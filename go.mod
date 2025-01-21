@@ -1,4 +1,4 @@
-module github.com/seasea128/WebAPI
+module github.com/seasea128/FYP-WebAPI
 
 go 1.23.2
 

@@ -1,9 +1,9 @@
 package database
 
 import (
-	"github.com/seasea128/WebAPI/config"
-	"github.com/seasea128/WebAPI/database/migrations"
-	"github.com/seasea128/WebAPI/database/model"
+	"github.com/seasea128/FYP-WebAPI/config"
+	"github.com/seasea128/FYP-WebAPI/database/migrations"
+	"github.com/seasea128/FYP-WebAPI/database/model"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
