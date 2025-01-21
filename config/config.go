@@ -9,11 +9,15 @@ import (
 func loadDefault() {
 	viper.SetDefault("DBType", "sqlite")
 	viper.SetDefault("ConnectionString", "test.db")
+	viper.SetDefault("HTTPPort", "8080")
+	viper.SetDefault("MQTTPort", "1883")
 }
 
 type Configuration struct {
 	DBType           DBType `json:"DBType"`
 	ConnectionString string `json:"ConnectionString"`
+	HTTPPort         int    `json:"HTTPPort"`
+	MQTTPort         int    `json:"MQTTPort"`
 }
 
 type DBType string
