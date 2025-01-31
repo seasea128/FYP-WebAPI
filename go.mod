@@ -6,6 +6,7 @@ require (
 	github.com/danielgtaylor/huma/v2 v2.28.0
 	github.com/mochi-mqtt/server/v2 v2.6.6
 	github.com/spf13/viper v1.19.0
+	google.golang.org/protobuf v1.36.1
 	gorm.io/driver/postgres v1.5.11
 	gorm.io/driver/sqlite v1.5.7
 	gorm.io/gorm v1.25.12

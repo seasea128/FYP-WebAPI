@@ -1,49 +1,36 @@
 package httpServer
 
 import (
-	"context"
-	"fmt"
 	"log/slog"
 	"net/http"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/danielgtaylor/huma/v2/adapters/humago"
+	mqtt "github.com/mochi-mqtt/server/v2"
+	"github.com/seasea128/FYP-WebAPI/httpServer/routes"
 	"gorm.io/gorm"
 )
 
-type GreetingOutput struct {
-	Body struct {
-		Message string `json:"message" example:"Hello, world!" doc:"Greeting message"`
-	}
-}
-
-func CreateHTTPServer(db *gorm.DB) *http.ServeMux {
+func CreateHTTPServer(db *gorm.DB, mqtt *mqtt.Server) *http.ServeMux {
 	router := http.NewServeMux()
 
 	api := humago.New(router, huma.DefaultConfig("Testing", "1.0.0"))
 
+	// TODO: Request/Response Logger
 	api.UseMiddleware(func(ctx huma.Context, next func(huma.Context)) {
 		slog.Info(ctx.URL().Path)
+		next(ctx)
 	})
 
-	AddRoutes(api)
+	// TODO: Token checker middleware
+
+	AddRoutes(api, mqtt, db)
 
 	return router
 }
 
-func AddRoutes(api huma.API) {
-	huma.Register(api, huma.Operation{
-		OperationID: "get-greeting",
-		Method:      http.MethodGet,
-		Path:        "/greeting/{name}",
-		Summary:     "Get a greeting",
-		Description: "Get a greeting for a person by name.",
-		Tags:        []string{"Greetings"},
-	}, func(ctx context.Context, input *struct {
-		Name string `path:"name" maxLength:"30" example:"world" doc:"Name to greet"`
-	}) (*GreetingOutput, error) {
-		resp := &GreetingOutput{}
-		resp.Body.Message = fmt.Sprintf("Hello, %s!", input.Name)
-		return resp, nil
-	})
+func AddRoutes(api huma.API, mqtt *mqtt.Server, db *gorm.DB) {
+	huma.Register(api, routes.GreetingsOperation, routes.GreetingsHandler)
+	huma.Register(api, routes.SessionStartOperation, routes.SessionStart(db, mqtt))
+	huma.Register(api, routes.SessionStopOperation, routes.SessionStop(db, mqtt))
 }

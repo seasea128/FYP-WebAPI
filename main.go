@@ -6,12 +6,10 @@ import (
 	"net/http"
 
 	"github.com/danielgtaylor/huma/v2/humacli"
-	mqtt "github.com/mochi-mqtt/server/v2"
-	"github.com/mochi-mqtt/server/v2/hooks/auth"
-	"github.com/mochi-mqtt/server/v2/listeners"
 	"github.com/seasea128/FYP-WebAPI/config"
 	"github.com/seasea128/FYP-WebAPI/database"
 	"github.com/seasea128/FYP-WebAPI/httpServer"
+	"github.com/seasea128/FYP-WebAPI/mqttServer"
 )
 
 type Options struct {
@@ -41,13 +39,13 @@ func main() {
 	}
 
 	cli := humacli.New(func(hooks humacli.Hooks, option *Options) {
-		httpHandler := httpServer.CreateHTTPServer(db)
-
-		mqttHandler, err := CreateMQTTServer(cfg)
+		mqttHandler, err := mqttServer.CreateMQTTServer(cfg, db)
 		if err != nil {
 			slog.Error("Failed to create MQTT server", slog.String("error", err.Error()))
 			return
 		}
+
+		httpHandler := httpServer.CreateHTTPServer(db, mqttHandler)
 
 		hooks.OnStart(func() {
 			slog.Info("Starting MQTT server", slog.Int("Port", cfg.MQTTPort))
@@ -67,24 +65,4 @@ func main() {
 	})
 
 	cli.Run()
-}
-
-func CreateMQTTServer(cfg *config.Configuration) (*mqtt.Server, error) {
-	mqttServer := mqtt.New(nil)
-	mqttServer.Log = slog.Default()
-
-	err := mqttServer.AddHook(new(auth.AllowHook), nil)
-	if err != nil {
-		err = fmt.Errorf("Cannot add hooks: %s", err.Error())
-		return nil, err
-	}
-	tcp := listeners.NewTCP(listeners.Config{ID: "t1", Address: fmt.Sprintf(":%d", cfg.MQTTPort)})
-	stats := listeners.NewHTTPStats(listeners.Config{ID: "s1", Address: ":8902"}, mqttServer.Info)
-	err = mqttServer.AddListener(tcp)
-	err = mqttServer.AddListener(stats)
-	if err != nil {
-		err = fmt.Errorf("Cannot add listener: %s", err.Error())
-		return nil, err
-	}
-	return mqttServer, nil
 }

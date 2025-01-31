@@ -1,0 +1,10 @@
+@startuml
+boundary "Controller" as con
+participant "MQTT Server" as server
+con -> server : Connect
+server -> con : Session start on topic /session
+group "Until session stop"
+		con -> server : DataReceived on topic /data
+end
+server -> con : Session stop on topic /session
+@end

@@ -13,4 +13,4 @@ DST_DIR="."
 
 protoc -I=$PROTO_SRC_DIR --go_out=$DST_DIR $PROTO_SRC_DIR/*
 
-go build -v -o ./bin/WebAPI-$version-$hash_str$file_ext #-ldflags "-X main.hash=$hash_str -X main.version=$version"
+go build -v -o ./bin/WebAPI-$version-$hash_str$file_ext -ldflags "-X main.hash=$hash_str -X main.version=$version"
