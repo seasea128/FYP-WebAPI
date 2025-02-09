@@ -1,0 +1,9 @@
+FROM golang:1.23.6-alpine
+
+WORKDIR /usr/src/api
+
+COPY ./bin/WebAPI ./
+
+COPY ./config.json ./
+
+CMD ["/usr/src/api/WebAPI"]

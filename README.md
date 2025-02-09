@@ -10,7 +10,8 @@
 ### Linux
 
 ```bash
-git submobule update
+go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+git submodule update
 go get -u
 ./build.sh
 ```
@@ -18,10 +19,33 @@ go get -u
 ### Windows
 
 ```powershell
-git submobule update
+go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+git submodule update
 go get -u
 ./build.ps1
 ```
+
+## Deployment
+
+### Docker
+
+#### Remote deployment
+
+Clone the repo to server or connect to server's Docker instance with docker context
+
+```bash
+docker context create <context-name> --docker "host=ssh://<username>@<hostname>"
+```
+
+Then, the project can be deployed with docker compose.
+
+```bash
+docker compose up -d
+```
+
+This might take a while to build the image, as go-sqlite are used and it's a package that is known to take quite a long time to build because of CGO.
+
+There is 3 containers being deployed with this compose file, first is a postgres database that will be used to store all of the data, second is a grafana instance that will be used as the dashboard, and finally the API itself.
 
 ## Configuration
 

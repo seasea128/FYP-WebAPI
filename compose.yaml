@@ -1,0 +1,33 @@
+services:
+  database:
+    container_name: "postgres-db-FYP"
+    #image: 'postgis/postgis:latest'
+    image: 'postgres:latest'
+    ports:
+      - "15432:5432"
+    env_file:
+      - ./docker/postgres.env
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
+  grafana:
+    container_name: grafana-FYP
+    image: grafana/grafana-oss
+    restart: unless-stopped
+    ports:
+     - '3000:3000'
+    volumes:
+      - grafana-data:/var/lib/grafana
+
+  webapi:
+    container_name: webapi-FYP
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    ports:
+      - "1883:1883"
+      - "8080:8080"
+volumes:
+  pg-data:
+  grafana-data:
+
