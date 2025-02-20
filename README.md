@@ -16,7 +16,8 @@ go get -u
 ./build.sh
 ```
 
-### Windows
+### Windows (Powershell)
+TODO: Add build.ps1
 
 ```powershell
 go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
@@ -35,6 +36,7 @@ Clone the repo to server or connect to server's Docker instance with docker cont
 
 ```bash
 docker context create <context-name> --docker "host=ssh://<username>@<hostname>"
+docker context use <context-name>
 ```
 
 Then, the project can be deployed with docker compose.
