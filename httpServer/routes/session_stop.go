@@ -28,9 +28,8 @@ func SessionStop(db *gorm.DB, mqtt *mqtt.Server) sessionHandler {
 	return func(ctx context.Context, input *request.Session) (*request.Session, error) {
 		slog.Info("SessionStart", slog.String("body", fmt.Sprintf("%+#v", input.Body)))
 		session := &controllerMessage.Session{
-			Id:           0,
 			ControllerId: input.Body.ControllerID,
-			Start:        false,
+			SessionId:    0,
 		}
 		sessionOut, err := proto.Marshal(session)
 		if err != nil {

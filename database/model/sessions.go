@@ -6,10 +6,10 @@ import (
 )
 
 type Sessions struct {
-	ID        uint64
-	Name      string
-	UserID    uint64
-	User      Users
-	CreatedAt time.Time
-	DeletedAt sql.NullTime
+	ID           uint64
+	Name         string
+	ControllerID string
+	SessionID    int32
+	CreatedAt    time.Time
+	DeletedAt    sql.NullTime
 }
