@@ -138,11 +138,12 @@ func (h *CallbackHook) handleData(cl *mqtt.Client, pk packets.Packet) {
 	}
 
 	switch data.Type {
-
 	case controllerMessage.PacketType_DATA:
+		h.handleDataPointsPacket(data.Data)
 	case controllerMessage.PacketType_SESSION:
+		h.handleSessionPacket(data.Session)
 	default:
-		panic("unexpected controllerMessage.PacketType")
+		h.Log.Error("unexpected controllerMessage.PacketType")
 	}
 
 }
