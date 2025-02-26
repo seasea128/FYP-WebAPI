@@ -7,11 +7,11 @@ type SuspensionLogs struct {
 	CreatedAt    time.Time
 	ControllerID string
 	SessionID    int32
-	Session      Sessions
 	LeftTop      int32
 	LeftBottom   int32
 	RightTop     int32
 	RightBottom  int32
 	GPSPosition  string
 	GPSSpeed     string
+	// Session      Sessions
 }
