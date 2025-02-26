@@ -1,6 +1,7 @@
 package config
 
 import (
+	"strings"
 	"sync/atomic"
 
 	"github.com/spf13/viper"
@@ -32,6 +33,9 @@ func LoadConfig() (*atomic.Pointer[Configuration], error) {
 	viper.SetConfigType("json")
 	viper.AddConfigPath(".")
 	loadDefault()
+	viper.SetEnvPrefix("webapi")
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	viper.AutomaticEnv()
 
 	config := &Configuration{}
 	err := viper.ReadInConfig()
