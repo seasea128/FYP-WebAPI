@@ -149,6 +149,22 @@ func (h *CallbackHook) handleData(cl *mqtt.Client, pk packets.Packet) {
 }
 
 func (h *CallbackHook) handleSessionPacket(session *controllerMessage.Session) {
+	var controller model.Controllers
+	result := h.config.DB.Where(&model.Controllers{ControllerName: session.ControllerId}).First(&controller)
+	if result.Error != nil {
+		slog.Error("Cannot find controller with given controller name", slog.String("error", result.Error.Error()), slog.String("controllerName", session.ControllerId))
+		return
+	}
+
+	if result.RowsAffected == 0 {
+		controller.ControllerName = session.ControllerId
+		result = h.config.DB.Create(&controller)
+		if result.Error != nil {
+			slog.Error("Cannot create new controller", slog.String("error", result.Error.Error()))
+			return
+		}
+	}
+
 	sessionDB := model.Sessions{
 		ID:           0,
 		Name:         fmt.Sprintf("%s-%d", session.ControllerId, session.SessionId),
@@ -158,10 +174,11 @@ func (h *CallbackHook) handleSessionPacket(session *controllerMessage.Session) {
 		DeletedAt:    sql.NullTime{},
 	}
 
-	result := h.config.DB.Create(&sessionDB)
+	result = h.config.DB.Create(&sessionDB)
 
 	if result.Error != nil {
 		slog.Error("Cannot add session to database", slog.String("err", result.Error.Error()))
+		return
 	}
 
 	slog.Info("Session added to Database", slog.String("controllerId", session.ControllerId), slog.String("session", fmt.Sprintf("%+#v", sessionDB)))
