@@ -11,7 +11,6 @@ fi
 if [ "$1" = "docker" ]
 then
 	file_name="WebAPI"
-	# export CGO_ENABLED=0
 else
 	file_name="WebAPI-$version-$hash_str$file_ext"
 fi
