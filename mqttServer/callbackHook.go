@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"log/slog"
+	"strconv"
 	"time"
 
 	mqtt "github.com/mochi-mqtt/server/v2"
@@ -205,5 +206,11 @@ func (h *CallbackHook) handleDataPointsPacket(data *controllerMessage.DataPoints
 		}
 
 		slog.Info("Data added to Database", slog.String("controllerId", data.ControllerId), slog.String("data", fmt.Sprintf("%+#v", suspensionLog)))
+
+		h.config.Server.Publish(fmt.Sprintf("realtime/%s/DistanceLt", data.ControllerId), []byte(strconv.Itoa(int(measurement.DistanceLt))), false, 0)
+		h.config.Server.Publish(fmt.Sprintf("realtime/%s/DistanceLb", data.ControllerId), []byte(strconv.Itoa(int(measurement.DistanceLb))), false, 0)
+		h.config.Server.Publish(fmt.Sprintf("realtime/%s/DistanceRt", data.ControllerId), []byte(strconv.Itoa(int(measurement.DistanceRt))), false, 0)
+		h.config.Server.Publish(fmt.Sprintf("realtime/%s/DistanceRb", data.ControllerId), []byte(strconv.Itoa(int(measurement.DistanceRb))), false, 0)
+
 	}
 }
