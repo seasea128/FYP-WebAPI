@@ -1,13 +1,7 @@
 $hash_str = (git rev-parse --short HEAD).Trim()
 $version = (git describe --tags).Trim()
 
-$file_ext = if ($env:GOOS -eq "windows") { ".exe" } else { "" }
-
-if ($args[0] -eq "docker") {
-    $file_name = "WebAPI"
-} else {
-    $file_name = "WebAPI-$version-$hash_str$file_ext"
-}
+$file_name = "WebAPI-$version-$hash_str.exe"
 
 $PROTO_SRC_DIR = "./Protobuf-FYP/proto"
 $DST_DIR = "."
