@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"database/sql"
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"log/slog"
 	"strconv"
@@ -153,8 +154,10 @@ func (h *CallbackHook) handleSessionPacket(session *controllerMessage.Session) {
 	var controller model.Controllers
 	result := h.config.DB.Where(&model.Controllers{ControllerName: session.ControllerId}).First(&controller)
 	if result.Error != nil {
-		slog.Error("Cannot find controller with given controller name", slog.String("error", result.Error.Error()), slog.String("controllerName", session.ControllerId))
-		return
+		if !errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			slog.Error("Cannot find controller with given controller name", slog.String("error", result.Error.Error()), slog.String("controllerName", session.ControllerId))
+			return
+		}
 	}
 
 	if result.RowsAffected == 0 {
@@ -164,6 +167,26 @@ func (h *CallbackHook) handleSessionPacket(session *controllerMessage.Session) {
 			slog.Error("Cannot create new controller", slog.String("error", result.Error.Error()))
 			return
 		}
+	}
+
+	if !session.IsActive {
+		sessionDB := model.Sessions{
+			Name:         fmt.Sprintf("%s-%d", session.ControllerId, session.SessionId),
+			ControllerID: session.ControllerId,
+			SessionID:    session.SessionId,
+		}
+		result = h.config.DB.First(&sessionDB)
+		if result.Error != nil {
+			slog.Error("Cannot query session in database", slog.String("err", result.Error.Error()))
+			return
+		}
+
+		sessionDB.FinishedAt = sql.NullTime{
+			Time:  time.Now(),
+			Valid: true,
+		}
+
+		return
 	}
 
 	sessionDB := model.Sessions{
@@ -186,9 +209,9 @@ func (h *CallbackHook) handleSessionPacket(session *controllerMessage.Session) {
 }
 
 func (h *CallbackHook) handleDataPointsPacket(data *controllerMessage.DataPoints) {
-	for _, measurement := range data.Measurement {
+	for i, measurement := range data.Measurement {
 		suspensionLog := model.SuspensionLogs{
-			CreatedAt:    data.Timestamp.AsTime(),
+			CreatedAt:    data.Timestamp.AsTime().Add(time.Millisecond * time.Duration(10*i)),
 			ControllerID: data.ControllerId,
 			SessionID:    data.SessionId,
 			LeftTop:      measurement.DistanceLt,
