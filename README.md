@@ -5,6 +5,10 @@
 - Go >= 1.23.2
 - protoc >= 29.2
 
+### SQLite3 support
+
+- GCC >= 14 (Tested on GCC 14.2.1, older version should work as well)
+
 ## Building
 
 ### Linux
