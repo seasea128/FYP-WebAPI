@@ -2,15 +2,15 @@ FROM golang:1.24.0-bookworm
 
 WORKDIR /usr/src/api
 
-COPY go.mod go.sum ./
-RUN go mod download && go mod verify
-
-COPY ./ ./
-
 RUN apt update
 RUN apt -y upgrade
 RUN apt -y install protobuf-compiler
 RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+
+COPY go.mod go.sum ./
+RUN go mod download && go mod verify
+
+COPY ./ ./
 
 RUN ./build.sh docker
 

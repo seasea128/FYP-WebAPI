@@ -1,8 +1,14 @@
 services:
   database:
-    container_name: "postgres-db-FYP"
+    container_name: postgres-db-FYP
     #image: 'postgis/postgis:latest'
-    image: 'postgres:latest'
+    image: "postgres:latest"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
     ports:
       - "15432:5432"
     env_file:
@@ -14,13 +20,21 @@ services:
     container_name: grafana-FYP
     image: grafana/grafana-oss
     restart: unless-stopped
+    env_file:
+      - ./docker/grafana.env
     ports:
-     - '3000:3000'
+      - "80:3000"
     volumes:
       - grafana-data:/var/lib/grafana
 
   webapi:
     container_name: webapi-FYP
+    depends_on:
+      database:
+        condition: service_healthy
+        restart: true
+    env_file:
+      - ./docker/webapi.env
     build:
       context: .
       dockerfile: ./docker/Dockerfile
@@ -30,4 +44,3 @@ services:
 volumes:
   pg-data:
   grafana-data:
-
