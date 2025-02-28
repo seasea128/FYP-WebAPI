@@ -3,7 +3,7 @@
 ## Requirements
 
 - Go >= 1.23.2
-- protoc >= 29.2
+- protoc >= 29.2 (Can be installed via winget or choco on Windows)
 
 ### SQLite3 support
 
