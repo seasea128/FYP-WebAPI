@@ -11,17 +11,16 @@
 
 ```bash
 go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
-git submodule update
+git submodule update --init --recursive .
 go get -u
 ./build.sh
 ```
 
 ### Windows (Powershell)
-TODO: Add build.ps1
 
 ```powershell
 go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
-git submodule update
+git submodule update --init --recursive .
 go get -u
 ./build.ps1
 ```
