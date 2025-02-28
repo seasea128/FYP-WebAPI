@@ -25,7 +25,7 @@ func InitConnection(cfg *config.Configuration) (*gorm.DB, error) {
 	}
 
 	// TODO: Implement migration system
-	db.AutoMigrate(model.Sessions{}, model.SuspensionLogs{}, model.Users{})
+	db.AutoMigrate(model.Sessions{}, model.SuspensionLogs{}, model.Users{}, model.Controllers{})
 	return db, nil
 }
 
